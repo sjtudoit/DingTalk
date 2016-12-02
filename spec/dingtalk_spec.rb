@@ -34,7 +34,7 @@ describe Dingtalk do
     from = [Dingtalk::UserInfo.new({"name" => "xxx", "userid" => "1"}),
             Dingtalk::UserInfo.new({"name" => "aaa", "userid" => "4"})]
     Dingtalk::Server.merge_users!(into, from)
-    expect(into.length).eql? 4
+    expect(into.length).to eql(4)
   end
 
   it 'query all users' do
