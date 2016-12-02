@@ -24,7 +24,9 @@ module Dingtalk
       uri = URI(INTERFACE_URL + '/user/simplelist?' + 'access_token=' + @token + '&department_id=' + department_id.to_s)
       response = Net::HTTP.get(uri)
       result = JSON.parse(response)
-      result['userlist']
+      result['userlist'].map do |user_data|
+        UserInfo.new user_data
+      end
     end
 
     # 查询所有用户
@@ -59,11 +61,23 @@ module Dingtalk
     end
 
     # 判断是否相同用户
-    # @param [Hash] left
-    # @param [Hash] right
+    # @param [User] left
+    # @param [User] right
     # @return [TrueClass/FalseClass]
     def self.same_user?(left, right)
-      left['userid'] == right['userid']
+      left.userid == right.userid
+    end
+  end
+
+  class UserInfo
+
+    attr_reader :name, :userid
+
+    # 构造
+    # @param [Hash] data 钉钉返回的单个用户数据
+    def initialize(data)
+      @name = data['name']
+      @userid = data['userid']
     end
   end
 end

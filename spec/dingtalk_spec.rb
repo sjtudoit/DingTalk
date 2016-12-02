@@ -28,8 +28,11 @@ describe Dingtalk do
   end
 
   it 'merge users correct' do
-    into = [{"name" => "xxx", "userid" => "1"}, {"name" => "yyy", "userid" => "2"}, {"name" => "zzz", "userid" => "3"}]
-    from = [{"name" => "xxx", "userid" => "1"}, {"name" => "aaa", "userid" => "4"}]
+    into = [Dingtalk::UserInfo.new({"name" => "xxx", "userid" => "1"}),
+            Dingtalk::UserInfo.new({"name" => "yyy", "userid" => "2"}),
+            Dingtalk::UserInfo.new({"name" => "zzz", "userid" => "3"})]
+    from = [Dingtalk::UserInfo.new({"name" => "xxx", "userid" => "1"}),
+            Dingtalk::UserInfo.new({"name" => "aaa", "userid" => "4"})]
     Dingtalk::Server.merge_users!(into, from)
     expect(into.length).eql? 4
   end
