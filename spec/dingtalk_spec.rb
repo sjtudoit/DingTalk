@@ -7,9 +7,9 @@ describe Dingtalk do
     expect(Dingtalk::VERSION).not_to be nil
   end
 
-  id = ENV['SJTUDOIT_DINGTALK_CORPID']
-  secret = ENV['SJTUDOIT_DINGTALK_CORPSECRET']
-  let(:server) { Dingtalk::Server.new(id, secret) }
+  Dingtalk.corpid = ENV['SJTUDOIT_DINGTALK_CORPID']
+  Dingtalk.corpsecret = ENV['SJTUDOIT_DINGTALK_CORPSECRET']
+  let(:server) { Dingtalk::Server.new(Dingtalk.corpid, Dingtalk.corpsecret) }
 
   it 'query access token' do
     token = server.query_access_token
@@ -28,8 +28,8 @@ describe Dingtalk do
   end
 
   it 'merge users correct' do
-    into = [{"name"=>"xxx", "userid"=>"1"}, {"name"=>"yyy", "userid"=>"2"}, {"name"=>"zzz", "userid"=>"3"}]
-    from = [{"name"=>"xxx", "userid"=>"1"}, {"name"=>"aaa", "userid"=>"4"}]
+    into = [{"name" => "xxx", "userid" => "1"}, {"name" => "yyy", "userid" => "2"}, {"name" => "zzz", "userid" => "3"}]
+    from = [{"name" => "xxx", "userid" => "1"}, {"name" => "aaa", "userid" => "4"}]
     Dingtalk::Server.merge_users!(into, from)
     expect(into.length).eql? 4
   end
