@@ -84,7 +84,9 @@ describe 'jsapi_ticket' do
   it 'cache access token correct' do
     ticket_one = server.query_jsapi_ticket
     ticket_two = Rails.cache.fetch(Dingtalk::Server.const_get :JSAPI_TICKET_CACHE_KEY)
+    ticket_three = server.query_jsapi_ticket
     expect(ticket_one).to eql(ticket_two)
+    expect(ticket_one).to eql(ticket_three)
   end
 
   it 'correct itself when cache nil' do
