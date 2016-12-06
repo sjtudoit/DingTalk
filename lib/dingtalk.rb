@@ -1,6 +1,7 @@
 require "dingtalk/version"
 require 'dingtalk/server/server'
 require 'dingtalk/server/user'
+require 'dingtalk/server/jsapi'
 
 module Dingtalk
 
