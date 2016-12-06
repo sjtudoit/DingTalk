@@ -28,7 +28,7 @@ module Dingtalk
       result[:corpId] = @corp_id
       result[:timeStamp] = timestamp
       result[:nonceStr] = noncestr
-      result[:signature] = sign(noncestr, jsapi_ticket, timestamp, url)
+      result[:signature] = sign(noncestr, jsapi_ticket, timestamp, self.class.pretreat_url(url))
       result
     end
 
@@ -63,6 +63,13 @@ module Dingtalk
     def sign(noncestr, jsapi_ticket, timestamp, url)
       string_to_sign = "jsapi_ticket=#{jsapi_ticket}&noncestr=#{noncestr}&timestamp=#{timestamp}&url=#{url}"
       Digest::SHA1.hexdigest string_to_sign
+    end
+
+    # 根据钉钉文档的要求预处理url
+    def self.pretreat_url(url)
+      uri = URI(url)
+      uri.fragment = nil
+      URI.unescape(uri.to_s)
     end
   end
 end

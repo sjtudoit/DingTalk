@@ -113,3 +113,13 @@ describe 'jsapi_config' do
     expect(config).not_to be nil
   end
 end
+
+describe 'url' do
+
+  it 'pretreat correct' do
+    original_url = 'http://localhost:3000/user?who=qqq&test=123%20321#eee'
+    goal = 'http://localhost:3000/user?who=qqq&test=123 321'
+    new_url = Dingtalk::Server.pretreat_url(original_url)
+    expect(new_url).to eql(goal)
+  end
+end
