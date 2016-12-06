@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 module Dingtalk
 
   class Server
@@ -12,6 +14,22 @@ module Dingtalk
         jsapi_ticket = query_jsapi_ticket_with_cache
       end
       jsapi_ticket
+    end
+
+    # 生成jsapi的配置
+    # @param [String] url
+    # @return [Hash] 如果出错返回nil
+    def create_jsapi_config(url)
+      jsapi_ticket = query_jsapi_ticket
+      return nil if jsapi_ticket.nil?
+      noncestr = SecureRandom.uuid.to_s
+      timestamp = Time.now.to_i
+      result = {}
+      result[:corpId] = @corp_id
+      result[:timeStamp] = timestamp
+      result[:nonceStr] = noncestr
+      result[:signature] = sign(noncestr, jsapi_ticket, timestamp, url)
+      result
     end
 
     private
@@ -34,6 +52,17 @@ module Dingtalk
       response = Net::HTTP.get(uri)
       result = JSON.parse(response)
       @token = result['ticket']
+    end
+
+    # jsapi签名
+    # @param [String] noncestr
+    # @param [String] jsapi_ticket
+    # @param [String] timestamp
+    # @param [String] url
+    # @return [String]
+    def sign(noncestr, jsapi_ticket, timestamp, url)
+      string_to_sign = "jsapi_ticket=#{jsapi_ticket}&noncestr=#{noncestr}&timestamp=#{timestamp}&url=#{url}"
+      Digest::SHA1.hexdigest string_to_sign
     end
   end
 end

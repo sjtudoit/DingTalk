@@ -101,3 +101,15 @@ describe 'jsapi_ticket' do
     expect(ticket.empty?).not_to be true
   end
 end
+
+describe 'jsapi_config' do
+
+  Dingtalk.corpid = ENV['SJTUDOIT_DINGTALK_CORPID']
+  Dingtalk.corpsecret = ENV['SJTUDOIT_DINGTALK_CORPSECRET']
+  let(:server) { Dingtalk::Server.new(Dingtalk.corpid, Dingtalk.corpsecret) }
+
+  it 'create config correct' do
+    config = server.create_jsapi_config('http://xxx.yyy.zzz')
+    expect(config).not_to be nil
+  end
+end
