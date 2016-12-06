@@ -57,14 +57,45 @@ describe 'cache' do
   end
 
   it 'correct itself when cache nil' do
-    token_two = Rails.cache.write(Dingtalk::Server.const_get(:ACCESS_TOKEN_CACHE_KEY), nil)
+    Rails.cache.write(Dingtalk::Server.const_get(:ACCESS_TOKEN_CACHE_KEY), nil)
     token = server.query_access_token
     expect(token).not_to be nil
   end
 
   it 'correct itself when cache empty' do
-    token_two = Rails.cache.write(Dingtalk::Server.const_get(:ACCESS_TOKEN_CACHE_KEY), '')
+    Rails.cache.write(Dingtalk::Server.const_get(:ACCESS_TOKEN_CACHE_KEY), '')
     token = server.query_access_token
     expect(token.empty?).not_to be true
+  end
+end
+
+describe 'jsapi_ticket' do
+
+  Rails.cache = ActiveSupport::Cache.lookup_store(:memory_store)
+  Dingtalk.corpid = ENV['SJTUDOIT_DINGTALK_CORPID']
+  Dingtalk.corpsecret = ENV['SJTUDOIT_DINGTALK_CORPSECRET']
+  let(:server) { Dingtalk::Server.new(Dingtalk.corpid, Dingtalk.corpsecret) }
+
+  it 'query jsapi_ticket correct' do
+    ticket = server.query_jsapi_ticket
+    expect(ticket).not_to be nil
+  end
+
+  it 'cache access token correct' do
+    ticket_one = server.query_jsapi_ticket
+    ticket_two = Rails.cache.fetch(Dingtalk::Server.const_get :JSAPI_TICKET_CACHE_KEY)
+    expect(ticket_one).to eql(ticket_two)
+  end
+
+  it 'correct itself when cache nil' do
+    Rails.cache.write(Dingtalk::Server.const_get(:JSAPI_TICKET_CACHE_KEY), nil)
+    ticket = server.query_jsapi_ticket
+    expect(ticket).not_to be nil
+  end
+
+  it 'correct itself when cache empty' do
+    Rails.cache.write(Dingtalk::Server.const_get(:JSAPI_TICKET_CACHE_KEY), '')
+    ticket = server.query_jsapi_ticket
+    expect(ticket.empty?).not_to be true
   end
 end
