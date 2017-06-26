@@ -1,3 +1,4 @@
+require 'net/http'
 require_relative 'server'
 
 module Dingtalk
